@@ -98,22 +98,29 @@ app.patch('/users/:uid', (req, res) => {
     // obtenemos el id del url Request
     const id = req.params.uid
     // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-    const user = db.users.find(elemento => elemento.id == id)
+    const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
     // si no lo encuentra envia mensaje de error
-    if (!user) return res.status(404).send({
+    if (indiceUsuario==-1) return res.status(404).send({
       "error": "string"
     });
-    
+    db.users[indiceUsuario]={
+      ...db.users[indiceUsuario],
+      ...req.body
+    }   
+
   res.send("Modifica una usuaria")
 })
 
 app.delete('/users/:uid', (req, res) => {
-  /*   const id=req.params.uid
-    const indeceUser = db.users.findIndex(elemento=> elemento.id==id)
-    if(indeceUser==-1) return res.status(404).send({
+    // obtenemos el id del url Request
+    const id = req.params.uid
+    // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
+    const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
+    // si no lo encuentra envia mensaje de error
+    if (indiceUsuario==-1) return res.status(404).send({
       "error": "string"
     });
-    db.users.splice(indeceUser,1) */
+    db.users.splice(indiceUsuario,1)
   res.send("usuaria eliminada")
 })
 
