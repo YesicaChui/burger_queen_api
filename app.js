@@ -29,20 +29,20 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
   console.log(req.body)
   // si no hay email o no hay password retorna 400 y el objeto error
-  if(!req.body.email || !req.body.password) return res.status(400).send({
+  if (!req.body.email || !req.body.password) return res.status(400).send({
     "error": "string"
   });
   // busco en la BD si hay usuario que coincida su  email y password con el del request
-  const validarUsuario = db.users.findIndex((elemento)=>elemento.email==req.body.email && elemento.password==req.body.password)
+  const validarUsuario = db.users.findIndex((elemento) => elemento.email == req.body.email && elemento.password == req.body.password)
   // si no lo encuentra retorno error
-  if(validarUsuario==-1) return res.status(404).send({
+  if (validarUsuario == -1) return res.status(404).send({
     "error": "string"
   });
   // retorno un access token statico en este sprint
   // retorno el access token y los datos del usuario
   res.send({
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-    "users":db.users[validarUsuario]  
+    "users": db.users[validarUsuario]
   })
 })
 //-------
@@ -56,43 +56,64 @@ app.get('/users', (req, res) => {
 
 app.post('/users', (req, res) => {
   console.log("Crear Usuaria")
-    // si no hay email o no hay password retorna 400 y el objeto error
-    if(!req.body.email || !req.body.password) return res.status(400).send({
-      "error": "string"
-    });
-    //verifico si ya existe usuaria con ese email
-    const user = db.users.find(elemento=> elemento.email==req.body.email)
-    // si no lo encuentra envia mensaje de error
-    if(!user) return res.status(404).send({
-      "error": "string"
-    });
-
-  res.send("Crear Usuaria")
+  // si no hay email o no hay password retorna 400 y el objeto error
+  if (!req.body.email || !req.body.password) return res.status(400).send({
+    "error": "string"
+  });
+  //verifico si ya existe usuaria con ese email
+  const user = db.users.find(elemento => elemento.email == req.body.email)
+  // si lo encuentra envia mensaje de error
+  if (user) return res.status(404).send({
+    "error": "string"
+  });
+  //crear el id --> buscaremos el mayor id de usuarios y le aumentaremos 1
+  const idMayor = db.users.reduce((acumulador, elemento) => acumulador < elemento.id ? elemento.id : acumulador, 1)
+  // creo el objeto nuevoUsuario para insertar al arreglo de objetos
+  const nuevoUsuario = {
+    "email": req.body.email,
+    "password": req.body.password,
+    "role": req.body.role,
+    "id": idMayor+1
+  }
+  // inserto al nuevoUsuario
+  db.users.push(nuevoUsuario)
+  // respondo al nuevo usuario
+  res.send(nuevoUsuario)
 })
 
 app.get('/users/:uid', (req, res) => {
   console.log("Obtiene informacion de una usuaria")
-  const id=req.params.uid
+  // obtenemos el id del url Request
+  const id = req.params.uid
   // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-  const user = db.users.find(elemento=> elemento.id==id)
+  const user = db.users.find(elemento => elemento.id == id)
   // si no lo encuentra envia mensaje de error
-  if(!user) return res.status(404).send({
+  if (!user) return res.status(404).send({
     "error": "string"
   });
   res.send(user)
 })
 app.patch('/users/:uid', (req, res) => {
   console.log("Modifica una usuaria")
+    // obtenemos el id del url Request
+    const id = req.params.uid
+    // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
+    const user = db.users.find(elemento => elemento.id == id)
+    // si no lo encuentra envia mensaje de error
+    if (!user) return res.status(404).send({
+      "error": "string"
+    });
+    
   res.send("Modifica una usuaria")
 })
 
 app.delete('/users/:uid', (req, res) => {
-/*   const id=req.params.uid
-  const indeceUser = db.users.findIndex(elemento=> elemento.id==id)
-  if(indeceUser==-1) return res.status(404).send({
-    "error": "string"
-  });
-  db.users.splice(indeceUser,1) */
+  /*   const id=req.params.uid
+    const indeceUser = db.users.findIndex(elemento=> elemento.id==id)
+    if(indeceUser==-1) return res.status(404).send({
+      "error": "string"
+    });
+    db.users.splice(indeceUser,1) */
   res.send("usuaria eliminada")
 })
 
