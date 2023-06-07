@@ -1,10 +1,11 @@
 // configuración de express
 import express, { json, urlencoded } from 'express'
-import { db } from './data/db.js'
+
 import login from './routers/login.route.js'
 import users from './routers/user.route.js'
 import products from './routers/product.route.js'
 import orders from './routers/orders.route.js'
+import { authToken } from './utils/utils.js'
 
 const app = express()
 //https://www.geeksforgeeks.org/express-js-express-json-function/
@@ -31,6 +32,8 @@ app.get('/', (req, res) => {
 
 //configuración de rutas
 app.use('/login',login)
+// protejo las rutas siguiente para que pasen por el midleware
+app.use(authToken)
 app.use('/users',users)
 app.use('/products',products)
 app.use('/orders',orders)

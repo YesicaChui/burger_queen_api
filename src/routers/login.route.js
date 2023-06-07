@@ -1,5 +1,6 @@
 import {Router} from 'express'
 import { db } from '../data/db.js'
+import { generateToken } from '../utils/utils.js'
 const router = Router()
 
 router.post('/', (req, res) => {
@@ -14,10 +15,11 @@ router.post('/', (req, res) => {
   if (validarUsuario == -1) return res.status(404).send({
     "error": "string"
   });
+  const accessToken=generateToken(db.users[validarUsuario])
   // retorno un access token statico en este sprint
   // retorno el access token y los datos del usuario
   res.send({
-    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    accessToken,
     "users": db.users[validarUsuario]
   })
 })
