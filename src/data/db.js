@@ -399,6 +399,12 @@ export const db={
       "id": 3
     },
     {
+      "email": "karencita@gmail.com",
+      "password": "123456",
+      "role": "admin",
+      "id": 4
+    },
+    {
       "email": "franco@gmail.com",
       "password": "1234567",
       "role": "chef",

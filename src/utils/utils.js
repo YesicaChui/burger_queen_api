@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 const PRIVATE_KEY = 'yesi'
 
 export const generateToken = user => {
-  const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '24h' })
+  const token = jwt.sign({ user }, PRIVATE_KEY, { expiresIn: '1m' })
   return token
 }
 
