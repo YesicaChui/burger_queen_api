@@ -3,6 +3,7 @@ const orderSchema = new mongoose.Schema({
   client: String,
   status: String,
   dateEntry: String,
+  dateProcessed: String,
   id: Number,
   products: Array
 });

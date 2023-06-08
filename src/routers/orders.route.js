@@ -23,7 +23,8 @@ router.post('/', async (req, res) => {
     "client": req.body.client,
     "products": req.body.products,
     "status": req.body.status,
-    "dateEntry": req.body.dateEntry
+    "dateEntry": req.body.dateEntry,
+    "dateProcessed": req.body.dateProcessed,
   }
 
   const ordenGenerado = new orderModel(nuevaOrder)
@@ -38,12 +39,12 @@ router.post('/', async (req, res) => {
   }
 })
 
-router.get('/:uid', (req, res) => {
+router.get('/:uid', async (req, res) => {
   console.log("Obtiene informacion de una Orden")
   // obtenemos el id del url Request
   const id = req.params.uid
   // traigo el elemento que coincida el id con el id del arreglo de objetos de ordenes 
-  const order = db.orders.find(elemento => elemento.id == id)
+  const order = await orderModel.findOne({ id }).lean().exec()
   // si no lo encuentra envia mensaje de error
   if (!order) return res.status(404).send({
     "error": "string"
