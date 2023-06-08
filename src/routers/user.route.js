@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import userModel from '../models/user.model.js'
+import { createHash } from '../utils/utils.js'
 const router = Router()
 
 //Rutas Users Operaciones sobre usuarias
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
    // creo el objeto nuevoUsuario para insertar al arreglo de objetos
   const nuevoUsuario = {
     "email": req.body.email,
-    "password": req.body.password,
+    "password": createHash(req.body.password),
     "role": req.body.role,
   }
   // inserto al nuevoUsuario
