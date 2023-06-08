@@ -18,15 +18,14 @@ router.post('/', async (req, res) => {
   if (!req.body.email || !req.body.password) return res.status(400).send({
     "error": "string"
   });
+  const email = req.body.email
   //verifico si ya existe usuaria con ese email
-  /*   const user = db.users.find(elemento => elemento.email == req.body.email)
-    // si lo encuentra envia mensaje de error
-    if (user) return res.status(404).send({
-      "error": "string"
-    }); */
-  //crear el id --> buscaremos el mayor id de usuarios y le aumentaremos 1
-  //const idMayor = db.users.reduce((acumulador, elemento) => acumulador < elemento.id ? elemento.id : acumulador, 0)
-  // creo el objeto nuevoUsuario para insertar al arreglo de objetos
+  const user = await userModel.findOne({ email }).lean().exec()
+  // si no lo encuentra envia mensaje de error
+  if (user) return res.status(403).send({
+    "error": "string"
+  });
+   // creo el objeto nuevoUsuario para insertar al arreglo de objetos
   const nuevoUsuario = {
     "email": req.body.email,
     "password": req.body.password,
@@ -53,13 +52,14 @@ router.get('/:uid', async (req, res) => {
   console.log("Obtiene informacion de una usuaria")
   // obtenemos el id del url Request
   const id = req.params.uid
-  // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
+  // traigo el elemento que coincida el id con el id de MongoDB
   // const user = db.users.find(elemento => elemento.id == id)
   const user = await userModel.findOne({ id }).lean().exec()
   // si no lo encuentra envia mensaje de error
   if (!user) return res.status(404).send({
     "error": "string"
   });
+  // si lo encuentro retorno el usuario
   res.send(user)
 })
 
@@ -67,16 +67,6 @@ router.patch('/:uid', async (req, res) => {
   console.log("Modifica una usuaria")
   // obtenemos el id del url Request
   const id = req.params.uid
-  /*   // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-    const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceUsuario == -1) return res.status(404).send({
-      "error": "string"
-    });
-    db.users[indiceUsuario] = {
-      ...db.users[indiceUsuario],
-      ...req.body
-    } */
   try {
     const result = await userModel.updateOne({ id }, { ...req.body })
     // matchedCount = coincidencia encontrada
@@ -102,13 +92,6 @@ router.patch('/:uid', async (req, res) => {
 router.delete('/:uid', async (req, res) => {
   // obtenemos el id del url Request
   const id = req.params.uid
-  /*   // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-    const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceUsuario == -1) return res.status(404).send({
-      "error": "string"
-    });
-    db.users.splice(indiceUsuario, 1) */
   try {
     // eliminando usuario por id
     const respuesta = await userModel.deleteOne({ id })
