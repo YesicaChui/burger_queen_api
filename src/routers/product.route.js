@@ -1,5 +1,4 @@
 import {Router} from 'express'
-import { db } from '../data/db.js'
 import productModel from '../models/product.model.js'
 import moment from 'moment';
 import 'moment-timezone';
@@ -33,7 +32,7 @@ const fechaHoraActual = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss'
   // guardo en la BD de mongoDB
   try {
     await productoGenerado.save()
-    // respondo al nuevo usuario
+    // respondo al nuevo producto
     res.send(nuevoProducto)
   } catch (error) {
     console.error('Error al guardar producto:', error);

@@ -1,36 +1,41 @@
 import {Router} from 'express'
 import { db } from '../data/db.js'
+import orderModel from '../models/order.model.js'
 const router = Router()
 
 //Rutas orders Operaciones sobre ordenes
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // falta validar que envien un token valido
   console.log("Lista ordenes")
-  res.send(db.orders)
+  const orden = await orderModel.find().lean().exec()
+  res.send(orden)
 })
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   console.log("Crear order")
   // si no hay name o no hay price retorna 400 y el objeto error
   if (!req.body.products || req.body.products.length==0) return res.status(400).send({
     "error": "string"
   });
-  //crear el id --> buscaremos el mayor id de Orders y le aumentaremos 1
-  const idMayor = db.orders.reduce((acumulador, elemento) => acumulador < elemento.id ? elemento.id : acumulador, 0)
   // creo el objeto nuevaOrder para insertar al arreglo de objetos
   const nuevaOrder = {
-    "id": idMayor+1,
     "client": req.body.client,
     "products": req.body.products,
     "status": req.body.status,
     "dateEntry": req.body.dateEntry
   }
-  
-  // inserto la nuevaOrder
-  db.orders.push(nuevaOrder)
-  // respondo al nueva Order
-  res.send(nuevaOrder)
+
+  const ordenGenerado = new orderModel(nuevaOrder)
+  // guardo en la BD de mongoDB
+  try {
+    await ordenGenerado.save()
+    // respondo al nuevo order
+    res.send(nuevaOrder)
+  } catch (error) {
+    console.error('Error al guardar la orden:', error);
+    res.status(500).send({"error": "string" });
+  }
 })
 
 router.get('/:uid', (req, res) => {

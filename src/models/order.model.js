@@ -4,19 +4,7 @@ const orderSchema = new mongoose.Schema({
   status: String,
   dateEntry: String,
   id: Number,
-  products: [
-    {
-      product: {
-        "id": Number,
-        "name": String,
-        "price": Number,
-        "image": String,
-        "type": String,
-        "dateEntry": String
-      },
-      qty: Number
-    }
-  ]
+  products: Array
 });
 
 
@@ -41,6 +29,6 @@ orderSchema.pre('save', async function (next) {
   }
 });
 
-const orderModel = mongoose.model("orders", userSchema);
+const orderModel = mongoose.model("orders", orderSchema);
 
 export default orderModel;

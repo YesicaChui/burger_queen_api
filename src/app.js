@@ -12,7 +12,6 @@ const app = express()
 //https://www.geeksforgeeks.org/express-js-express-json-function/
 // leer json
 app.use(json())
-
 // genero mis rutas
 app.get('/', (req, res) => {
   res.send(`
