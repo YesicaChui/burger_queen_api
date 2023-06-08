@@ -14,9 +14,9 @@ userSchema.pre('save', async function (next) {
 
   try {
     // busco el id más alto
-    const usuarioMasAlto = await this.model('users').findOne().sort('-id').exec();
-    if (usuarioMasAlto) {
-      this.id = usuarioMasAlto.id + 1;
+    const usuarioIdMasAlto = await this.model('users').findOne().sort('-id').exec();
+    if (usuarioIdMasAlto) {
+      this.id = usuarioIdMasAlto.id + 1;
     } else {
       this.id = 1;
     }

@@ -1,35 +1,43 @@
 import {Router} from 'express'
 import { db } from '../data/db.js'
+import productModel from '../models/product.model.js'
+import moment from 'moment';
+import 'moment-timezone';
 const router = Router()
 
 //Rutas products Operaciones sobre productos
 router.get('/', (req, res) => {
-  // falta validar que envien un token valido
   console.log("Lista productos")
   res.send(db.products)
 })
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   console.log("Crear producto")
   // si no hay name o no hay price retorna 400 y el objeto error
   if (!req.body.name || !req.body.price) return res.status(400).send({
     "error": "string"
   });
-
-  //crear el id --> buscaremos el mayor id de productos y le aumentaremos 1
-  const idMayor = db.products.reduce((acumulador, elemento) => acumulador < elemento.id ? elemento.id : acumulador, 0)
-  // creo el objeto nuevoProducto para insertar al arreglo de objetos
+// Obtener la fecha y hora actual en la zona horaria de Perú
+const fechaHoraActual = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss');
+   // creo el objeto nuevoProducto para insertar al arreglo de objetos
   const nuevoProducto = {
     "name":  req.body.name,
     "price": req.body.price,
     "image": req.body.image,
     "type": req.body.type,
-    "id": idMayor+1
+    "dateEntry": fechaHoraActual,
   }
   // inserto al nuevoProducto
-  db.products.push(nuevoProducto)
-  // respondo al nuevo producto
-  res.send(nuevoProducto)
+  const productoGenerado = new productModel(nuevoProducto)
+  // guardo en la BD de mongoDB
+  try {
+    await productoGenerado.save()
+    // respondo al nuevo usuario
+    res.send(nuevoProducto)
+  } catch (error) {
+    console.error('Error al guardar producto:', error);
+    res.status(500).send({"error": "string" });
+  }
 })
 
 router.get('/:uid', (req, res) => {

@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { db } from '../data/db.js'
 import userModel from '../models/user.model.js'
 const router = Router()
 
@@ -36,14 +35,12 @@ router.post('/', async (req, res) => {
   const usuarioGenerado = new userModel(nuevoUsuario)
   // guardo en la BD de mongoDB
   try {
-    console.log("antes del save")
     await usuarioGenerado.save()
-    console.log("despues del save")
     // respondo al nuevo usuario
     res.send(nuevoUsuario)
   } catch (error) {
     console.error('Error al guardar el usuario:', error);
-    res.status(500).send({ error: 'Error al guardar el usuario' });
+    res.status(500).send({"error": "string" });
   }
 
 })
