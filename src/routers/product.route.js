@@ -68,7 +68,7 @@ router.patch('/:uid', async (req, res) => {
       }
       res.send({ ...req.body })
     } catch (err) {
-      console.log(`error insertando: ${err}`)
+      console.log(`error actualizando: ${err}`)
       // retorno 500 si hay otro problema talvez con el mongoDB
       res.status(500).send({
         "error": "string"

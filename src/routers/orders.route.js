@@ -51,7 +51,7 @@ router.get('/:uid', async (req, res) => {
   });
   res.send(order)
 })
-router.patch('/:uid', (req, res) => {
+router.patch('/:uid',async(req, res) => {
   console.log("Modifica una orden")
   // si no hay status nos da error de mal hecha la petición
   if (!req.body.status ) return res.status(400).send({
@@ -59,18 +59,24 @@ router.patch('/:uid', (req, res) => {
   });
     // obtenemos el id del url Request
     const id = req.params.uid
-    // traigo el elemento que coincida el id con el id del arreglo de objetos de ordenes 
-    const indiceOrden = db.orders.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceOrden==-1) return res.status(404).send({
-      "error": "string"
-    });
-    db.orders[indiceOrden]={
-      ...db.orders[indiceOrden],
-      ...req.body
-    }   
-
-  res.send("Modifica una orden")
+    try {
+      const result = await orderModel.updateOne({ id }, { ...req.body })
+      // matchedCount = coincidencia encontrada
+      console.log(result.matchedCount)
+      // si no existe coincidencia con el id retorna 404
+      if (!result.matchedCount) {
+        return res.status(404).send({
+          error: 'string'
+        });
+      }
+      res.send({ ...req.body })
+    } catch (err) {
+      console.log(`error actualizando: ${err}`)
+      // retorno 500 si hay otro problema talvez con el mongoDB
+      res.status(500).send({
+        "error": "string"
+      });
+    }
 })
 
 router.delete('/:uid', (req, res) => {
