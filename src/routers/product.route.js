@@ -6,9 +6,10 @@ import 'moment-timezone';
 const router = Router()
 
 //Rutas products Operaciones sobre productos
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   console.log("Lista productos")
-  res.send(db.products)
+  const product = await productModel.find().lean().exec()
+  res.send(product)
 })
 
 router.post('/', async (req, res) => {
