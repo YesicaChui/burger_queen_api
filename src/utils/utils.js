@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
+
 const PRIVATE_KEY = 'yesi'
 
 export const generateToken = user => {
@@ -15,4 +17,12 @@ export const authToken = (req, res, next) => {
     req.user = credentials.user
     next()
   })
+}
+
+export const createHash = password => {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+}
+
+export const isValidPassword = (user, password) => {
+  return bcrypt.compareSync(password, user.password)
 }

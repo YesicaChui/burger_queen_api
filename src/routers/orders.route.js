@@ -1,12 +1,10 @@
 import {Router} from 'express'
-import { db } from '../data/db.js'
 import orderModel from '../models/order.model.js'
 const router = Router()
 
 //Rutas orders Operaciones sobre ordenes
 
 router.get('/', async (req, res) => {
-  // falta validar que envien un token valido
   console.log("Lista ordenes")
   const orden = await orderModel.find().lean().exec()
   res.send(orden)

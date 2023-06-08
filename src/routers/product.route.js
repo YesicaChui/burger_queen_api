@@ -80,7 +80,6 @@ router.delete('/:uid', async (req, res) => {
     // obtenemos el id del url Request
     const id = req.params.uid
     try {
-      // eliminando usuario por id
       const respuesta = await productModel.deleteOne({ id })
       console.log(respuesta)
       //deleteCount = conteo de borrados
