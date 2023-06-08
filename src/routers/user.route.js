@@ -49,18 +49,20 @@ router.post('/', async (req, res) => {
 
 })
 
-router.get('/:uid', (req, res) => {
+router.get('/:uid', async (req, res) => {
   console.log("Obtiene informacion de una usuaria")
   // obtenemos el id del url Request
   const id = req.params.uid
   // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-  const user = db.users.find(elemento => elemento.id == id)
+ // const user = db.users.find(elemento => elemento.id == id)
+ const user = await userModel.findOne({ id }).lean().exec()
   // si no lo encuentra envia mensaje de error
   if (!user) return res.status(404).send({
     "error": "string"
   });
   res.send(user)
 })
+
 router.patch('/:uid', (req, res) => {
   console.log("Modifica una usuaria")
   // obtenemos el id del url Request
