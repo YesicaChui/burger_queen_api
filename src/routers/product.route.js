@@ -41,48 +41,61 @@ const fechaHoraActual = moment().tz('America/Lima').format('YYYY-MM-DD HH:mm:ss'
   }
 })
 
-router.get('/:uid', (req, res) => {
+router.get('/:uid', async (req, res) => {
   console.log("Obtiene informacion de un producto")
   // obtenemos el id del url Request
   const id = req.params.uid
   // traigo el elemento que coincida el id con el id del arreglo de objetos de productos 
-  const product = db.products.find(elemento => elemento.id == id)
+  const product = await productModel.findOne({ id }).lean().exec()
   // si no lo encuentra envia mensaje de error
   if (!product) return res.status(404).send({
     "error": "string"
   });
   res.send(product)
 })
-router.patch('/:uid', (req, res) => {
+router.patch('/:uid', async (req, res) => {
   console.log("Modifica un producto")
     // obtenemos el id del url Request
     const id = req.params.uid
-    // traigo el elemento que coincida el id con el id del arreglo de objetos de productos 
-    const indiceProducto = db.products.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceProducto==-1) return res.status(404).send({
-      "error": "string"
-    });
-    db.products[indiceProducto]={
-      ...db.products[indiceProducto],
-      ...req.body
-    }   
-
-  res.send("Modifica un producto")
+    try {
+      const result = await productModel.updateOne({ id }, { ...req.body })
+      // matchedCount = coincidencia encontrada
+      console.log(result.matchedCount)
+      // si no existe coincidencia con el id retorna 404
+      if (!result.matchedCount) {
+        return res.status(404).send({
+          error: 'string'
+        });
+      }
+      res.send({ ...req.body })
+    } catch (err) {
+      console.log(`error insertando: ${err}`)
+      // retorno 500 si hay otro problema talvez con el mongoDB
+      res.status(500).send({
+        "error": "string"
+      });
+    }
 })
 
-router.delete('/:uid', (req, res) => {
+router.delete('/:uid', async (req, res) => {
     // obtenemos el id del url Request
     const id = req.params.uid
-    // traigo el elemento que coincida el id con el id del arreglo de objetos de productos 
-    const indiceProducto = db.products.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceProducto==-1) return res.status(404).send({
-      "error": "string"
-    });
-    // uso Splice para quitar un producto
-    db.products.splice(indiceProducto,1)
-  res.send("producto eliminado")
+    try {
+      // eliminando usuario por id
+      const respuesta = await productModel.deleteOne({ id })
+      console.log(respuesta)
+      //deleteCount = conteo de borrados
+      // si el conteo de borrados es 0 entonces retorno 404 no encontrado
+      if (!respuesta.deletedCount) return res.status(404).send({
+        "error": "string"
+      });
+      res.send("producto eliminado")
+    } catch (err) {
+      console.log(`error: ${err}`)
+      return res.status(500).send({
+        "error": "string"
+      });
+    }
 })
 
 export default router

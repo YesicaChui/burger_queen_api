@@ -50,7 +50,6 @@ router.get('/:uid', async (req, res) => {
   // obtenemos el id del url Request
   const id = req.params.uid
   // traigo el elemento que coincida el id con el id de MongoDB
-  // const user = db.users.find(elemento => elemento.id == id)
   const user = await userModel.findOne({ id }).lean().exec()
   // si no lo encuentra envia mensaje de error
   if (!user) return res.status(404).send({
