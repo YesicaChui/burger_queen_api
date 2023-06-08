@@ -1,39 +1,52 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import { db } from '../data/db.js'
+import userModel from '../models/user.model.js'
 const router = Router()
 
 //Rutas Users Operaciones sobre usuarias
-router.get('/', (req, res) => {
-  // falta validar que envien un token valido
+router.get('/', async (req, res) => {
   console.log("Lista usuarias")
-  res.send(db.users)
+  // find nos trae todos los datos del modelo usuario y lean hace que se vuelva el formato de arreglo de objetos
+  // y con exec se ejecuta
+  const users = await userModel.find().lean().exec()
+  res.send(users)
 })
 
-router.post('/', (req, res) => {
-  console.log("Crear Usuaria")
+router.post('/', async (req, res) => {
+  console.log("Crear Usuaria con mongodb")
   // si no hay email o no hay password retorna 400 y el objeto error
   if (!req.body.email || !req.body.password) return res.status(400).send({
     "error": "string"
   });
   //verifico si ya existe usuaria con ese email
-  const user = db.users.find(elemento => elemento.email == req.body.email)
-  // si lo encuentra envia mensaje de error
-  if (user) return res.status(404).send({
-    "error": "string"
-  });
+  /*   const user = db.users.find(elemento => elemento.email == req.body.email)
+    // si lo encuentra envia mensaje de error
+    if (user) return res.status(404).send({
+      "error": "string"
+    }); */
   //crear el id --> buscaremos el mayor id de usuarios y le aumentaremos 1
-  const idMayor = db.users.reduce((acumulador, elemento) => acumulador < elemento.id ? elemento.id : acumulador, 0)
+  //const idMayor = db.users.reduce((acumulador, elemento) => acumulador < elemento.id ? elemento.id : acumulador, 0)
   // creo el objeto nuevoUsuario para insertar al arreglo de objetos
   const nuevoUsuario = {
     "email": req.body.email,
     "password": req.body.password,
     "role": req.body.role,
-    "id": idMayor+1
   }
   // inserto al nuevoUsuario
-  db.users.push(nuevoUsuario)
-  // respondo al nuevo usuario
-  res.send(nuevoUsuario)
+  // le entrego los datos a insertar al modelo Usuario
+  const usuarioGenerado = new userModel(nuevoUsuario)
+  // guardo en la BD de mongoDB
+  try {
+    console.log("antes del save")
+    await usuarioGenerado.save()
+    console.log("despues del save")
+    // respondo al nuevo usuario
+    res.send(nuevoUsuario)
+  } catch (error) {
+    console.error('Error al guardar el usuario:', error);
+    res.status(500).send({ error: 'Error al guardar el usuario' });
+  }
+
 })
 
 router.get('/:uid', (req, res) => {
@@ -50,32 +63,32 @@ router.get('/:uid', (req, res) => {
 })
 router.patch('/:uid', (req, res) => {
   console.log("Modifica una usuaria")
-    // obtenemos el id del url Request
-    const id = req.params.uid
-    // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-    const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceUsuario==-1) return res.status(404).send({
-      "error": "string"
-    });
-    db.users[indiceUsuario]={
-      ...db.users[indiceUsuario],
-      ...req.body
-    }   
+  // obtenemos el id del url Request
+  const id = req.params.uid
+  // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
+  const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
+  // si no lo encuentra envia mensaje de error
+  if (indiceUsuario == -1) return res.status(404).send({
+    "error": "string"
+  });
+  db.users[indiceUsuario] = {
+    ...db.users[indiceUsuario],
+    ...req.body
+  }
 
   res.send("Modifica una usuaria")
 })
 
 router.delete('/:uid', (req, res) => {
-    // obtenemos el id del url Request
-    const id = req.params.uid
-    // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
-    const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceUsuario==-1) return res.status(404).send({
-      "error": "string"
-    });
-    db.users.splice(indiceUsuario,1)
+  // obtenemos el id del url Request
+  const id = req.params.uid
+  // traigo el elemento que coincida el id con el id del arreglo de objetos de usuario 
+  const indiceUsuario = db.users.findIndex(elemento => elemento.id == id)
+  // si no lo encuentra envia mensaje de error
+  if (indiceUsuario == -1) return res.status(404).send({
+    "error": "string"
+  });
+  db.users.splice(indiceUsuario, 1)
   res.send("usuaria eliminada")
 })
 

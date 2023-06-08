@@ -20,7 +20,8 @@
   "homepage": "https://github.com/YesicaChui/burger_queen_api#readme",
   "dependencies": {
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0"
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.2.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
