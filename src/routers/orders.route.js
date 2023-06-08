@@ -79,18 +79,25 @@ router.patch('/:uid',async(req, res) => {
     }
 })
 
-router.delete('/:uid', (req, res) => {
+router.delete('/:uid', async (req, res) => {
     // obtenemos el id del url orders
     const id = req.params.uid
-    // traigo el elemento que coincida el id con el id del arreglo de objetos de orders 
-    const indiceOrder = db.orders.findIndex(elemento => elemento.id == id)
-    // si no lo encuentra envia mensaje de error
-    if (indiceOrder==-1) return res.status(404).send({
-      "error": "string"
-    });
-    // uso Splice para quitar un Orden
-    db.orders.splice(indiceOrder,1)
-  res.send("Orden eliminada")
+    try {
+      // eliminando usuario por id
+      const respuesta = await orderModel.deleteOne({ id })
+      console.log(respuesta)
+      //deleteCount = conteo de borrados
+      // si el conteo de borrados es 0 entonces retorno 404 no encontrado
+      if (!respuesta.deletedCount) return res.status(404).send({
+        "error": "string"
+      });
+      res.send("orden eliminada")
+    } catch (err) {
+      console.log(`error: ${err}`)
+      return res.status(500).send({
+        "error": "string"
+      });
+    }
 })
 
 export default router
