@@ -1,10 +1,10 @@
-const config = require('../config');
+import config from '../config.js';
 
 const { fetch, fetchWithAuth } = process;
 
 describe('POST /login', () => {
   it('should respond with 400 when email and password missing', () => (
-    fetch('/auth', { method: 'POST' })
+    fetch('/login', { method: 'POST' })
       .then((resp) => expect(resp.status).toBe(400))
   ));
 
@@ -41,7 +41,7 @@ describe('POST /login', () => {
         expect(resp.status).toBe(200);
         return resp.json();
       })
-      .then(({ token }) => fetchWithAuth(token)(`/users/${config.adminEmail}`))
+      .then((resp) => fetchWithAuth(resp.accessToken)(`/users/${resp.users.id}`))
       .then((resp) => {
         expect(resp.status).toBe(200);
         return resp.json();

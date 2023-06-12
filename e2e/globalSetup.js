@@ -31,10 +31,6 @@ const __e2e = {
 
 const fetch = (url, opts = {}) => import('node-fetch')
   .then(({ default: fetch }) => {
-    console.log("************")
-    console.log(opts)
-    console.log(url)
-    console.log("-------*")
     return fetch(`${baseUrl}${url}`, {
       ...opts,
       headers: {
@@ -50,13 +46,19 @@ const fetch = (url, opts = {}) => import('node-fetch')
   }
   );
 
-const fetchWithAuth = (token) => (url, opts = {}) => fetch(url, {
+const fetchWithAuth = (token) => (url, opts = {}) => {
+  console.log("+++++++++++++++")
+  console.log(token)
+  console.log(url)
+  console.log(opts)
+  console.log("+++++++++++++++")
+  return fetch(url, {
   ...opts,
   headers: {
     ...opts.headers,
     'Authorization': `Bearer ${token}`,
   },
-});
+})};
 
 const fetchAsAdmin = (url, opts) => fetchWithAuth(__e2e.adminToken)(url, opts);
 const fetchAsTestUser = (url, opts) => fetchWithAuth(__e2e.testUserToken)(url, opts);
@@ -91,9 +93,6 @@ const checkAdminCredentials = () => fetch('/login', {
     return resp.json();
   })
   .then(({ accessToken }) => {
-    console.log(accessToken)
-    console.log(__e2e.adminUserCredentials)
-    console.log("------------------------")
     return Object.assign(__e2e, { adminToken: accessToken })
   }
   );
@@ -116,7 +115,7 @@ const waitForServerToBeReady = (retries = 10) => new Promise((resolve, reject) =
 
 export default () => new Promise((resolve, reject) => {
   if (process.env.REMOTE_URL) {
-    console.info(`Running tests on remote server ${process.env.REMOTE_URL}`);
+   // console.info(`Running tests on remote server ${process.env.REMOTE_URL}`);
     return resolve();
   }
 
@@ -135,7 +134,7 @@ export default () => new Promise((resolve, reject) => {
     Object.assign(__e2e, { childProcessPid: child.pid });
 
     child.stdout.on('data', (chunk) => {
-      console.info(`\x1b[34m${chunk.toString()}\x1b[0m`);
+     // console.info(`\x1b[34m${chunk.toString()}\x1b[0m`);
     });
 
     child.stderr.on('data', (chunk) => {
@@ -143,12 +142,12 @@ export default () => new Promise((resolve, reject) => {
       if (/DeprecationWarning/.test(str)) {
         return;
       }
-      console.error('child::stderr', str);
+    //  console.error('child::stderr', str);
     });
 
     process.on('uncaughtException', (err) => {
       console.error('UncaughtException!');
-      console.error(err);
+    //  console.error(err);
       kill(child.pid, 'SIGKILL', () => process.exit(1));
     });
 
@@ -160,7 +159,7 @@ export default () => new Promise((resolve, reject) => {
         console.log('there was an error');
         kill(child.pid, 'SIGKILL', () => reject(err));
       })
-  }).catch((error) => console.log(error));
+  }).catch((error) => console.log("hubo un error aqui"));
 });
 
 // Export globals - ugly... :-(
