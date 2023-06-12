@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/app.js"
+    "start": "nodemon src/app.js",
+    "test:e2e": "jest --verbose --testPathPattern e2e --globalSetup ./e2e/globalSetup --globalTeardown ./e2e/globalTeardown --runInBand"
   },
   "repository": {
     "type": "git",
@@ -25,9 +26,16 @@
     "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.43",
-    "mongoose": "^7.2.2"
+    "mongoose": "^7.2.2",
+    "node-fetch": "^3.3.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@babel/core": "^7.22.5",
+    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
+    "@shelf/jest-mongodb": "^4.1.7",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "nodemon": "^2.0.22",
+    "tree-kill": "^1.2.2"
   }
 }

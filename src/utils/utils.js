@@ -10,7 +10,11 @@ export const generateToken = user => {
 }
 
 export const authToken = (req, res, next) => {
-  const token = req.headers.authorization
+  console.log("leyendo valores")
+  console.log(req.headers)
+  console.log("fin lectura")
+  //const token = req.headers.authorization
+  const token = req.headers.authorization.split(' ')[1];
   if (!token) return res.status(401).json({  "error": "string" })
   jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
     if (error) return res.status(401).json({  "error": "string" })
