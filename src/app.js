@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 //const uri = 'mongodb://localhost:27017'
 const uri = process.env.DB_HOST
+const port = process.env.PORT || 8080;
 const app = express()
 //https://www.geeksforgeeks.org/express-js-express-json-function/
 // leer json
@@ -48,7 +49,7 @@ try {
     //nombre de la base de datos
     dbName: 'burgerQueenAPI_DB'
   })
-  app.listen(3000, () => {
+  app.listen(port, () => {
     console.log('Ready')
   })
 } catch (error) {
