@@ -7,11 +7,13 @@ import products from './routers/product.route.js'
 import orders from './routers/orders.route.js'
 import { authToken } from './utils/utils.js'
 import mongoose from 'mongoose'
+import cors from 'cors'
 const uri = 'mongodb://localhost:27017'
 const app = express()
 //https://www.geeksforgeeks.org/express-js-express-json-function/
 // leer json
 app.use(json())
+app.use(cors())
 // genero mis rutas
 app.get('/', (req, res) => {
   res.send(`
