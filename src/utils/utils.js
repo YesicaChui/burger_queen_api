@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-
-const PRIVATE_KEY = 'yesi'
+import dotenv from 'dotenv';
+dotenv.config();
+const PRIVATE_KEY = process.env.PRIVATE_KEY
 
 export const generateToken = user => {
   // firmando token y especificando tiempo de expiracion

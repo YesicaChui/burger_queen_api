@@ -8,7 +8,10 @@ import orders from './routers/orders.route.js'
 import { authToken } from './utils/utils.js'
 import mongoose from 'mongoose'
 import cors from 'cors'
-const uri = 'mongodb://localhost:27017'
+import dotenv from 'dotenv';
+dotenv.config();
+//const uri = 'mongodb://localhost:27017'
+const uri = process.env.DB_HOST_LOCAL
 const app = express()
 //https://www.geeksforgeeks.org/express-js-express-json-function/
 // leer json
@@ -33,13 +36,13 @@ app.get('/', (req, res) => {
 })
 
 //configuración de rutas
-app.use('/login',login)
+app.use('/login', login)
 // protejo las rutas siguiente para que pasen por el midleware
 app.use(authToken)
-app.use('/users',users)
-app.use('/products',products)
-app.use('/orders',orders)
-try{
+app.use('/users', users)
+app.use('/products', products)
+app.use('/orders', orders)
+try {
   // conexion a la base de datos
   await mongoose.connect(uri, {
     //nombre de la base de datos
@@ -48,7 +51,7 @@ try{
   app.listen(3000, () => {
     console.log('Ready')
   })
-}catch(error){
+} catch (error) {
   console.log('hubo un error')
 }
 
