@@ -47,11 +47,6 @@ const fetch = (url, opts = {}) => import('node-fetch')
   );
 
 const fetchWithAuth = (token) => (url, opts = {}) => {
-  console.log("+++++++++++++++")
-  console.log(token)
-  console.log(url)
-  console.log(opts)
-  console.log("+++++++++++++++")
   return fetch(url, {
   ...opts,
   headers: {
