@@ -12,10 +12,13 @@ export const generateToken = user => {
 
 export const authToken = (req, res, next) => {
   //const token = req.headers.authorization
-  const token = req.headers.authorization.split(' ')[1];
-  if (!token) return res.status(401).json({  "error": "string" })
+  const token = req.headers.authorization.startsWith('Bearer ')
+                ? req.headers.authorization.split(' ')[1]
+                : req.headers.authorization
+  if (!token) return res.status(401).json({ "error": "string" })
   jwt.verify(token, PRIVATE_KEY, (error, credentials) => {
-    if (error) return res.status(401).json({  "error": "string" })
+    console.log(credentials)
+    if (error) return res.status(401).json({ "error": "string" })
     req.user = credentials.user
     next()
   })

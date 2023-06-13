@@ -11,7 +11,7 @@ import cors from 'cors'
 import dotenv from 'dotenv';
 dotenv.config();
 //const uri = 'mongodb://localhost:27017'
-const uri = process.env.DB_HOST_LOCAL
+const uri = process.env.DB_HOST
 const app = express()
 //https://www.geeksforgeeks.org/express-js-express-json-function/
 // leer json
