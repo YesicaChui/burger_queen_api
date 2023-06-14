@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
   // retorno el access token y los datos del usuario
   res.send({
     accessToken,
-    "users": user
+    user
   })
 })
 
