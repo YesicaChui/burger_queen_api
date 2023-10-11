@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
       <h1>Bienvenidos al servidor de Burger Queen</h1>
     </header>
     <main>
-      <p>Se implementara las rutas de la siguiente documentacion</p>
+      <p>Se implementaron las rutas de la siguiente documentacion</p>
       <a href="https://app.swaggerhub.com/apis-docs/ssinuco/BurgerQueenAPI/2.0.0">documentacion rutas burger Queen Api</a>
     </main>
     <footer>
