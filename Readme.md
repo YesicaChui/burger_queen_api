@@ -103,12 +103,9 @@ Se realizo el test e2e de Autenticación
 
 ## 8. Despliegue
 
-Para el despliegue del servidor se uso [Railway](https://railway.app/) , es una plataforma de alojamiento (hosting) y despliegue para aplicaciones web y proyectos de Node.js. Proporciona una forma sencilla de implementar y gestionar aplicaciones Node.js en la nube.
-El proyecto se desplego y esta disponible en https://yesica-burgerqueenapi.up.railway.app/
+Para el despliegue use mi propio hosting https://yesica-chui-chalco.xyz.
+El proyecto se desplego y esta disponible en https://yesica-chui-chalco.xyz/app2/
 
-* Plataforma de Railway
-
-![despliegue](./imgReadme/railway.png)
 
 ## 9. Cómo usar
 

@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
       <a href="https://app.swaggerhub.com/apis-docs/ssinuco/BurgerQueenAPI/2.0.0">documentacion rutas burger Queen Api</a>
     </main>
     <footer>
-      <p>Autor: Yesica Chui Chalco</p>
+      <p>Autora: Yesica Chui Chalco</p>
     </footer>
   </body>
   `)
